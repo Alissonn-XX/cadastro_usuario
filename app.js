@@ -21,6 +21,7 @@ const cep = document.querySelector('[data-js-endereco="cep"]')
 const btnBuscarCep = document.querySelector('[data-js-endereco="consulta-endereco-cadastro"]')
 const tabela = document.querySelector('[data-js="table-usuario"] tbody')
 const container = document.querySelector('[data-js="container"]')
+const btnMinimizar = document.querySelector('[data-js="minimizar"]')
 let arr = []
 
 const formatCepIntercafe = (strCep) => {
@@ -134,7 +135,6 @@ btnBuscarCep.addEventListener('click',async () =>{
 
       if(cep.value.length > 0){
         objCEP.setObjCep(await buscarCepFetch(formatCepIntercafe(cep.value)))
-        removeClassInputVazio(inputVazios)
       }else{
         bairro.value =  '' 
         cidade.value =  ''
@@ -143,20 +143,20 @@ btnBuscarCep.addEventListener('click',async () =>{
         alert('Endereço não encontrato. Certifique-se que o CEP está correto')
       }
 
-  function removeClassInputVazio(arr){
+  const removeClassInputVazio = (arr)=>{
     arr.filter((input)=>{
-      let classInput = input.classList.contains('border','border-2','border-danger')
-        if(classInput && input.value.length > 0){
-          return input.classList.remove('border','border-2','border-danger')
-        }
-     })
+        let classInput = input.classList.contains('border','border-2','border-danger')
+          if(classInput && input.value.length > 0){
+            return input.classList.remove('border','border-2','border-danger')
+          }
+      })
   }
     
    bairro.value = objCEP.getObjCep()[bairro.dataset.jsEndereco]
    cidade.value = objCEP.getObjCep()[cidade.dataset.jsEndereco]
    estado.value = objCEP.getObjCep()[estado.dataset.jsEndereco]
    logradouro.value = objCEP.getObjCep()[logradouro.dataset.jsEndereco]
-  
+   removeClassInputVazio(inputVazios)
 })
 
 
@@ -258,11 +258,13 @@ btnBuscarCep.addEventListener('click',async () =>{
 // })
 
 
-const isValorExisti = (obj) =>{
+const isValorExisti = function isValorExisti(obj){
   let formatObjUsuario = {
     ...obj['usuario'],
     ...obj['endereco']
   };
+   
+ 
 
   if(document.querySelector('.modal-dialog')){
     return
@@ -289,7 +291,14 @@ const isValorExisti = (obj) =>{
   if(novoObjPropVazia.vazio){
     container.insertAdjacentElement('afterbegin',modalInfo(novoObjPropVazia))
   }
-  return novoObjPropVazia
+
+  
+  return  Object.entries(novoObjPropVazia)
+             .map(([chave,_])=>{
+  
+        return chave
+      })
+   
 }
 
 //MODAL EM CASO DE ALGUM CAMPO VAZIO NO FORMULÁRIO
@@ -328,7 +337,8 @@ const modalInfo = (valor) =>{
     divModalConteiner.classList.add('modal-dialog', 'modal-dialog-centered')
     divModalHeader.classList.add('modal-header')
     divModalChild.classList.add('modal-content')       
-    tituloModalHeader.classList.add('modal-title')
+    tituloModalHeader.classList.add('modal-title','modal-cor-fonte')
+    paragraModal.classList.add('modal-cor-fonte')
     divModalBody.classList.add('modal-body')
     divModalFooter.classList.add('modal-footer')
     btnCloseModalOk.classList.add('btn', 'btn-primary')
@@ -348,6 +358,32 @@ const modalInfo = (valor) =>{
     divModalConteiner.append(divModalChild)
 
   return divModalConteiner
+}
+
+
+const addClassDangerInputs = (arrInputsForm,forInputsVazios)=>{
+  arrInputsForm.filter((inputVazio)=>{
+    if(forInputsVazios.includes(inputVazio.name)){
+        inputVazio.classList.add('border','border-2','border-danger')
+
+        inputVazio.addEventListener('input', event=>{
+        if(event.target.value.length > 0){
+          inputVazio.classList.remove('border','border-2','border-danger')
+          }else{
+            inputVazio.classList.add('border','border-2','border-danger')
+          }
+        })  
+      }
+ })
+}
+
+const cadastroNovoUsuario = (isInputVazio,objCadastro)=>{
+ if(!isInputVazio.includes('vazio')){
+  addDoc(collectionsBd, objCadastro).then(doc =>{
+      console.log("usuario criado", doc.id)
+    }).catch(console.log)
+  };
+
 }
 
 formUsuarios.addEventListener('submit',event=>{
@@ -403,43 +439,19 @@ formUsuarios.addEventListener('submit',event=>{
    ,endereco: objEndereco.getObjCep()
   }
 
-  let forInputsVasios = 
-    Object.entries(isValorExisti(objCadastroUsuario))
-    .map(([chave,_])=>chave)
+  if(document.querySelector('.modal-dialog')){
+   return
+ }  
 
+ const forInputsVazios = isValorExisti(objCadastroUsuario);
+ 
 
- arrInputsForm.filter((inputVazio)=>{
-   if(forInputsVasios.includes(inputVazio.name)){
-      inputVazio.classList.add('border','border-2','border-danger')
-     inputVazio.addEventListener('input', event=>{
-       if(event.target.value.length > 0){
-         inputVazio.classList.remove('border','border-2','border-danger')
-        }else{
-          inputVazio.classList.add('border','border-2','border-danger')
-        }
-      })  
-    }
-})
+ addClassDangerInputs(arrInputsForm,forInputsVazios)
 
-// for(let i = 0; i < arrInputsForm.length; i++){
-//   if(arrInputsForm[i].value.length <= 0 || arrInputsForm[i].value){
-//     console.log(arrInputsForm[i].name);
-//     return
-//   }
-// }
-
-
-/*if(!isValorExisti(objCadastroUsuario).hasOwnProperty('vazio')){
-  console.log(isValorExisti(objCadastroUsuario).hasOwnProperty('vazio'));
-  addDoc(collectionsBd, objCadastroUsuario).then(doc =>{
-      console.log("usuario criado", doc.id)
-    }).catch(console.log)
-};
-*/
-
-//formUsuarios.reset()
+ cadastroNovoUsuario(forInputsVazios,objCadastroUsuario)
 
 })
+
 
 
 // tabela.addEventListener('click',event=>{
@@ -465,5 +477,3 @@ formUsuarios.addEventListener('submit',event=>{
 
 
 cepFormatInterface(cep)
-
-
