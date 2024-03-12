@@ -11,7 +11,9 @@
 
   <div data-js="container" class="container text-white">   
     <form  class="row g-3" data-js="inserir-usuarios">
-      <label  class="fs-2 border-bottom">Adicionar usuário</label>
+      <label  class="fs-2 border-bottom label-titulo">Adicionar usuário
+        <button type="button" class="minimizar" data-js="minimizar">__</button>
+      </label>
       <div class="col-md-6">
         <label class="form-label">Nome</label>
         <input type="text" class="form-control" placeholder="Ex.: João" data-js="campo-usuario" name="nome">
@@ -101,7 +103,7 @@
 
       <div id="button-adicionar">
         <button  class="btn" type="submit" data-js="btn-adicionar">
-          <img src="./image/icone_adicionar.png" alt="adicionar">
+          <img src="/curso-de-js-roger-melo/exercicio-42/image/icone_adicionar.png" alt="adicionar">
         </button>
       </div>
     </form>
@@ -130,5 +132,3 @@
 
 <script type="module" src="./app.js"></script>
 </html>
-
-
