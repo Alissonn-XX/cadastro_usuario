@@ -24,6 +24,18 @@ const container = document.querySelector('[data-js="container"]')
 const btnMinimizar = document.querySelector('[data-js="minimizar"]')
 let arr = []
 
+btnMinimizar
+.addEventListener("click",()=>{
+  let tblUsuario = document.querySelector('[data-js="tabela"]')
+  formUsuarios.classList.add("form-fechado")
+  tblUsuario
+  .classList.toggle("tbl-usuario")
+  tblUsuario
+  .classList.add("tbl-usuario-on")
+  
+})
+
+
 const formatCepIntercafe = (strCep) => {
   let cepFormatado = '';
    if(strCep.length > 0 ){
