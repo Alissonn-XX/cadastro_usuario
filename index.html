@@ -10,9 +10,9 @@
 <body>
 
   <div data-js="container" class="container text-white">   
-    <form  class="row g-3" data-js="inserir-usuarios">
+ <form  class="row g-3" data-js="inserir-usuarios">
       <label  class="fs-2 border-bottom label-titulo">Adicionar usuário
-        <button type="button" class="minimizar" data-js="minimizar">➔</button>
+        <button type="button" class="btn-seta minimizar" data-js="minimizar">➔</button>
       </label>
       <div class="col-md-6">
         <label class="form-label">Nome</label>
@@ -106,10 +106,14 @@
           <img src="./image/icone_adicionar.png" alt="adicionar">
         </button>
       </div>
-    </form>
-    <h2>Usuários</h2>
+    </form> 
     
-    <div class="table-responsive-sm">
+    <div data-js="tabela" class="table-responsive-sm tbl-usuario">
+    <h2>
+      <button type="button"
+      class="btn-seta tbl-btn-fechar" data-js="tbl-btn">➔</button>
+      Usuários
+    </h2>
       <table data-js="table-usuario" class="table table-sm table-striped table-dark">
         <thead>
           <tr>
@@ -124,7 +128,6 @@
         </tbody>
       </table>
     </div>
-  
   </div>
    
 
